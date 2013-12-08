@@ -1,0 +1,75 @@
+table.number_pad {
+border: 1px solid black;
+text-align: center;
+font-size: 40px;
+font-weight: bold;
+}
+
+table.number_pad tr { 
+
+}
+
+table.number_pad td { 
+	border: 4px solid black;
+	width: 60px;
+	height: 60px;
+}
+
+/*  table grid css starts here      */
+table.grid {
+border: 10px solid grey;
+text-align: center;
+font-size: 30px;
+font-weight: bold;
+color: blue;
+
+}
+
+table.grid tr { 
+
+}
+
+table.grid td { 
+	border: 1px solid grey;
+	width: 50px;
+	height: 50px;
+}
+
+.unchanged {
+	font-size: 30px;
+	color: green;
+	font-weight:bold;
+}
+
+.focused_cell {
+	background: yellow;
+}
+
+.start_game_button {
+	width: 240px;
+	height: 60px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.clear_button {
+	border: 5px solid black;
+	width: 220px;
+	height: 70px;
+	font-size: 35px;
+	font-weight: bold;
+}
+
+.td_dark_bg {
+	background: #6E6E6E;
+}
+
+.td_light_bg {
+	background: #D8D8D8;
+}
+
+#layout {
+	width: 700px;
+	border-style: solid;
+	
+}
