@@ -15,8 +15,10 @@
 </head>
 <body>
 <!--body onload="init()";-->	
-<div id="container" style="width:850px">
-<div id="playingboard" style="height:450px;width:500px;float:left;">
+<div id="container">
+<!--div id="container" style="width:850px"-->
+<div id="header">Sudoku</div> 
+<div id="playingboard">
 <table class="grid">
 	<tr>
 		<td> </td> <td></td>  <td></td> 
@@ -53,13 +55,13 @@
 
 <button type="button" class="start_game_button" id="start_game" mode="normal" >NEW GAME</button>&nbsp;&nbsp;
 
-<button type="button" class="start_game_button"  id="start_game_i" mode="instructor_only">NEW GAME (INST. ONLY)</button>&nbsp;&nbsp;
+<button type="button" class="start_game_button"  id="start_game_i" mode="instructor_only">NEW GAME (INSTRUSTOR ONLY)</button>&nbsp;&nbsp;
 <br><br><br>
 </div> <!--playingboard -->
 
-<div id="spacer" style="height:450px;width:20px;float:left;"></div>
+<div id="spacer"></div>
 
-<div id="number_pad" style="height:450px;width:280px;float:left;">
+<div id="number_pad_div">
 <table class="number_pad">
 	<tr>
 		<td>1</td>
@@ -79,8 +81,45 @@
 </table>
 
 <button type="button" class="clear_button">CLEAR</button>
-</div> <!-- number_pad -->
-</id> <!-- container -->
+</div>
+<!--div id="answer_div" hidden="hidden"> Answer &#40;For Instructors only&#41; -->
+
+<!--  Still not able to make this part work. Just commented out -->
+<!--table id="anwser_grid2" >
+	<tr>
+		<td> </td> <td></td>  <td></td> 
+		<td ></td> <td></td> <td></td> 
+		<td></td> <td></td> <td></td>
+	</tr>
+	<tr>
+		<td></td> <td></td>  <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+	</tr>
+	<tr>
+		<td></td> <td></td>  <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+	</tr>
+	<tr>
+		<td></td> <td></td>  <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+	</tr>
+	<tr>
+		<td></td> <td></td>  <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+	</tr>
+	<tr>
+		<td></td> <td></td>  <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+	</tr>
+	<tr>
+		<td></td> <td></td>  <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+	</tr>
+	<tr>
+		<td></td> <td></td>  <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+	</tr>
+	<tr>
+		<td></td> <td></td>  <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+	</tr>
+
+</table-->
+
+ <!-- number_pad -->
+</div> <!-- container -->
 
 
 

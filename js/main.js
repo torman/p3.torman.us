@@ -55,10 +55,11 @@ $(document).ready(function() {
 			}
 		});
 		// console.log ("gameDataFile: " + gameDataFile);
-		createAnswerGrid(gameDataFile);
+		// createAnswerGrid(gameDataFile);
 		gameStatus = 1;
-
 		
+		// $("#answer_div").attr("hidden", "hidden");
+		// $("#answer_grid2").attr("hidden", "hidden");
 	});
 })	
 
@@ -78,7 +79,18 @@ $(document).ready(function() {
 		var gameDataFile = getRandomGameDataFile();
 		
 		//console.log ("gameDataFile: " + gameDataFile);
-		createAnswerGrid(gameDataFile);
+		createAnswerGridAndAnswerTable(gameDataFile);
+		// show answer to instructor
+		// console.log("In startgame : Start printing answer");
+		// for (var i = 0; i < 9; i++) {
+			// var str = "";
+			// for (var j = 0; j <9; j++) {
+				// str += answerGrid[i][j];
+			// }
+			// console.log("In startgame : " + str);
+		// }
+		// console.log("In startgame : End printing answer");
+
 		setCellBackgroundColor ();
 
 		//console.log("Instructor only mode");		
@@ -106,31 +118,37 @@ $(document).ready(function() {
 				}
 			}
 		});
-		// console.log ("gameDataFile: " + gameDataFile);
-		createAnswerGrid(gameDataFile);
-		gameStatus = 1;
-	});
 
+		gameStatus = 1;
+
+		// hide the answer from regular user. it displays for instructors	
+		// $("#answer_div").removeAttr("hidden");
+		// $("#answer_grid2").removeAttr("hidden");
+	});
 })
 
 // system have some game data files, pick one randomly
 function getRandomGameDataFile () {
-	var min = 1;
+	var min = 2;
 	var max = totalNumberOfGameFile;
 	var randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 	var gameDataFile = '/files/game' + randomNumber + ".txt";
-//	var gameDataFile = "/files/game4.txt";
+	// var gameDataFile = '/files/game4.txt' ;
+	console.log(gameDataFile);
 	return gameDataFile;
 }
 
 // cleanup data left from the previous game
+// reset everything before starting a new game
 function reset () {
 	cellFilled = 0;
 	emptyGrid(currentGrid); 	
 	emptyGrid(answerGrid);
-	resetTable();	
+	resetTable();
+	// resetAnswerTable();
 }
 
+// empty all elements in grid
 function emptyGrid (grid) {
 	for (var x = 0; x < 9; x++) {
 		for (var y = 0; y < 9; y++) {
@@ -139,7 +157,7 @@ function emptyGrid (grid) {
 	}
 }
 
-// also need to cleanup number, attributes in all table cells 
+// cleanup data, attributes in all table cells 
 function resetTable () {
 	for (var x = 0; x< 9; x++) {
 		for (var y = 0; y < 9; y++) {
@@ -150,12 +168,22 @@ function resetTable () {
 	}	
 
 }
+
+// reset all cells in answer grid
+function resetAnswerTable() {
+	for (var x = 0; x< 9; x++) {
+		for (var y = 0; y < 9; y++) {
+			$("#answer_grid2 tr:eq(" + x + ") td:eq(" + y + ")").html("");
+		}
+	}
+};
+
 // build answer grid to compare what the player's final answer
 function createAnswerGrid (datafile) {
 	$.get(datafile, function(data) {
-		console.log("In createAnswerGrid: " + datafile);
+		// console.log("In createAnswerGrid: " + datafile);
 		var lines = data.split("\n");
-		console.log("In createAnswerGrid (total lines): " + lines.length);
+		// console.log("In createAnswerGrid (total lines): " + lines.length);
 		for (var i = 0, len = 81; i < len; i++) {
 			// console.log("In createAnswerGrid: " + lines[i]);
 			var x;
@@ -172,6 +200,46 @@ function createAnswerGrid (datafile) {
 	});
 }
 
+// builld answer grid and
+// answer table if running in instructor mode
+function createAnswerGridAndAnswerTable (datafile) {
+	$.get(datafile, function(data) {
+		// console.log("In createAnswerGrid: " + datafile);
+		var lines = data.split("\n");
+		// console.log("In createAnswerGrid (total lines): " + lines.length);
+		for (var i = 0, len = 81; i < len; i++) {
+			// console.log("In createAnswerGrid: " + lines[i]);
+			var x;
+			var y;
+			var value;
+			var fields = lines[i].split(/,/);
+			x = fields[0];
+			y = fields[1];
+			value = fields[2];
+			// answerGrid is a global variable declared in the beginning of this script
+			// console.log("In createAnswerGrid, cell value: " + value);
+			answerGrid[x][y] = value;
+
+			var cell; 
+			cell = $("#anwser_grid2 tr:eq(" + x + ") td:eq(" + y + ")");
+			cell.html(value);
+			console.log("In createAnswerGridAndAnswerTable :  cell value : " + value);
+			if (isInLightZone (x, y)) {
+				console.log("In createAnswerGridAndAnswerTable :  InLightZone : (" + x + ":" + y + ")");
+				cell.css("background-color", "#E0E0E0");
+			}
+			else {
+				console.log("In createAnswerGridAndAnswerTable : not InLightZone : (" + x + ":" + y + ")");
+				cell.css("background-color", "red");
+				cell.css("background-color", "red");
+			}					
+			
+		}
+	});
+}
+
+
+
 // create 2 dimensional array to hold grid data
 function create2DArray(rows) {
   var arr = [];
@@ -185,9 +253,23 @@ function create2DArray(rows) {
 // retrun true if they are the same, otherwise false
 function compareArray (array1, array2) {
 
+	console.log("In compareArray : start printing both grids");
+	for (var i=0; i<=8; i++ ) {
+		var str1 = "";
+		var str2 = "";
+		for (var j=0; j<=8; j++ ) {
+			str1 += array1[i][j];	
+			str2 += array2[i][j];	
+		}
+		// console.log(str1);
+		// console.log(str2);
+	}
+	// console.log("In compareArray : end printing both grids");
+
+
 	for (var i=0; i<=8; i++ ) {
 		for (var j=0; j<=8; j++ ) {
-			// console.log(array1[i][j] + ":" + array2[i][j]);
+			// console.log("In compareArray: " + array1[i][j] + ":" + array2[i][j]);
 			if (array1[i][j] != array2[i][j]) {
 				return false;
 			}
@@ -208,43 +290,16 @@ $(function () {
 			alert ("This cell is not changed.");
 		} else {
 			var selectedCellRowInd = $(this).parent().index('.grid tbody tr');
-			console.log(selectedCellRowInd);
+			// console.log(selectedCellRowInd);
 			var selectedCellTdInd = $(this).index('.grid tbody tr:eq(' + selectedCellRowInd + ') td');
-			console.log(selectedCellTdInd);
+			// console.log(selectedCellTdInd);
 
 			setCellBackgroundColor();
 			rowIndex = selectedCellRowInd;
 			tdIndex = selectedCellTdInd;
 			var cell = $(".grid tr:eq(" + rowIndex + ") td:eq(" + tdIndex + ")");
 			cell.css("background-color", "yellow");
-			
-			// if ( rowIndex === "" ) {
-				// console.log("case 1");
-				// rowIndex = selectedCellRowInd;
-				// tdIndex = selectedCellTdInd;
-				// console.log("case 1: " + rowIndex);
-				// console.log("case 1: " + tdIndex);
-				// $(this).toggleClass("focused_cell");
-			// } else if ((rowIndex != selectedCellRowInd) || (tdIndex != selectedCellTdInd)) {
-				// restore the previous selected cell to unselected
-				// console.log("before" + rowIndex + ":" + tdIndex);
-				// if ($(".grid tr:eq(" + rowIndex + ") td:eq(" + tdIndex + ")").html() === "") {
-					// $(".grid tr:eq(" + rowIndex + ") td:eq(" + tdIndex + ")").toggleClass("focused_cell");
-				// }
-				// rowIndex = selectedCellRowInd;
-				// tdIndex = selectedCellTdInd;
-				// console.log("after" + rowIndex + ":" + tdIndex);
-				// $(".grid tr:eq(" + rowIndex + ") td:eq(" + tdIndex + ")").toggleClass("focused_cell");
-		
-			// } else {
-				// console.log("Do nothing");
-				// $(".grid tr:eq(" + rowIndex + ") td:eq(" + tdIndex + ")").toggleClass("focused_cell");
-				// do nothing 
-			// }
-
 		}
-		
-		
 	});
 });
 
@@ -259,13 +314,19 @@ $(function () {
 			alert ("Game has not started. Please click START to start a new game");
 			return;
 		} 
+		
+		// if there is cell selected. it occurs when the game has just started
+		if ( rowIndex === "" ) {
+			// do nothing 
+			return;
+		}
 	
 		var selected_number =  $(this).html();
-		console.log(selected_number);
+		// console.log(selected_number);
 		var selected_cell = $(".grid tr:eq(" + rowIndex + ") td:eq(" + tdIndex + ")");
 		if ($(".grid tr:eq(" + rowIndex + ") td:eq(" + tdIndex + ")").html() === "") {
 			cellFilled += 1;
-			console.log("Number of cell filled: " + cellFilled );
+			// console.log("Number of cell filled: " + cellFilled );
 		}
 		selected_cell.html(selected_number);
 		selected_cell.toggleClass("focused_cell");
@@ -284,13 +345,19 @@ $(function () {
 			}
 			// console.log("compare the current grid with the answer grid");
 		}
-		console.log ("Number of cell filled: " + cellFilled);
+		// console.log ("Number of cell filled: " + cellFilled);
 	});
 });
 
 $(function () {
 	$(".clear_button").click(function() {
-		
+	
+		// if there is cell selected. it occurs when the game has just started
+		if ( rowIndex === "" ) {
+			// do nothing 
+			return;
+		}
+	
 		// console.log ("Want to see something here in .clear_button");
 		var selected_cell = $(".grid tr:eq(" + rowIndex + ") td:eq(" + tdIndex + ")");
 		
@@ -307,14 +374,14 @@ $(function () {
 				gameStatus = 1;
 			}
 		}
-		console.log ("Number of cell filled: " + cellFilled);
+		// console.log ("Number of cell filled: " + cellFilled);
 	});
 });
 
-// set implementation here
-// 
 
-
+// there are 9 small grids in the game grid. To make some contrast
+// the background color of a small grid is different from that of its adjacent grids
+// so we need to know if cell in a darker zone
 function isInLightZone (x, y) {
 
 	// console.log("In function isInLightZone");
@@ -326,7 +393,7 @@ function isInLightZone (x, y) {
 				"66", "67", "68", "76", "77", "78", "86", "87", "88"];
 	
 	var coordinate_code = "" + x + y ;
-	console.log ("coordinate_code: " + coordinate_code + " for " + x + ":" + y);
+	//console.log ("coordinate_code: " + coordinate_code + " for " + x + ":" + y);
 	 	
 	// console.log("lightZone length: " + lightZone.length);			 
 	for (var i=0; i < lightZone.length; i++) {
@@ -345,8 +412,8 @@ function setCellBackgroundColor () {
 			var tableCell = $(".grid tr:eq(" + x + ") td:eq(" + y + ")");
 			if (isInLightZone (x, y)) {
 				// var tableCell = $(".grid tr:eq(" + x + ") td:eq(" + y + ")");
-				console.log (  x + ":" + y + " in light zone");
-				tableCell.css("background-color", "#E0E0E0");
+				//console.log (  x + ":" + y + " in light zone");
+				tableCell.css("background-color", "#A4A4A4");
 			}
 			else {
 				tableCell.css("background-color", "white");
@@ -354,3 +421,23 @@ function setCellBackgroundColor () {
 		}	
 	}
 }	
+
+function display_anwser(answerGird) {
+
+	for (var x = 0; x < 9; x++) {
+		for (var y=0; y <9; y++) {
+			var anwser_value = answerGrid[x][y];
+			var tableCell = $(".anwser_grid tr:eq(" + x + ") td:eq(" + y + ")");
+			console.log("In display_anwser : (" + x + ":" + y + ") :" + anwser_value );
+			tableCell.html(anwser_value);
+			if (isInLightZone (x, y)) {
+				// var tableCell = $(".grid tr:eq(" + x + ") td:eq(" + y + ")");
+				//console.log (  x + ":" + y + " in light zone");
+				tableCell.css("background-color", "#E0E0E0");
+			}
+			else {
+				tableCell.css("background-color", "white");
+			}
+		}	
+	}
+}
